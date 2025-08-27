@@ -21,6 +21,8 @@ const ChatWindow: React.FC = () => {
       setMessages(data);
     };
     fetchChats();
+    const interval = setInterval(fetchChats, 3000); // every 3s
+    return () => clearInterval(interval);
   }, []);
 
   // scroll to bottom whenever messages change
