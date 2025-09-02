@@ -7,7 +7,31 @@ const JWT_SECRET = process.env.JWT_SECRET || "secret123";
 
 export async function GET() {
   await dbConnect();
-  const chats = await Chat.find().sort({ createdAt: 1 }); // oldest → newest
+
+  const now = new Date();
+
+  // cutoff = 21:30 UTC (which is 3:00 AM IST)
+  const cutoff = new Date(
+    Date.UTC(
+      now.getUTCFullYear(),
+      now.getUTCMonth(),
+      now.getUTCDate(),
+      21,
+      30,
+      0,
+      0
+    )
+  );
+
+  // if current UTC time is before 21:30, use yesterday’s 21:30 UTC
+  if (now < cutoff) {
+    cutoff.setUTCDate(cutoff.getUTCDate() - 1);
+  }
+
+  const chats = await Chat.find({
+    timestamp: { $gte: cutoff },
+  }).sort({ timestamp: 1 });
+
   return NextResponse.json(chats);
 }
 

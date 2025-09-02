@@ -25,11 +25,6 @@ const ChatWindow: React.FC = () => {
     return () => clearInterval(interval);
   }, []);
 
-  // scroll to bottom whenever messages change
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
-
   const handleSend = async () => {
     if (!input.trim()) return;
 
@@ -46,41 +41,59 @@ const ChatWindow: React.FC = () => {
     }
   };
 
+  const handleSignOut = async () => {
+    // 👉 depends on your auth, just a placeholder
+    await fetch("/api/signout", { method: "POST" });
+    window.location.href = "/login";
+  };
+
   return (
-    <div className="flex flex-col h-[80vh] w-full max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl border rounded shadow p-2 mx-auto">
-      {/* Chat messages */}
-      <div className="flex-1 overflow-y-auto space-y-2 p-2 border-b">
+    <div className="flex flex-col h-screen w-full max-w-2xl mx-auto bg-white border rounded shadow">
+      {/* Header */}
+      <div className="flex items-center justify-between px-4 py-2 border-b bg-gray-100 sticky top-0">
+        <h1 className="text-lg font-semibold">Chat</h1>
+        <button
+          onClick={handleSignOut}
+          className="flex items-center gap-1 text-sm text-red-600 hover:text-red-800"
+        >
+          Sign out
+        </button>
+      </div>
+
+      {/* Messages */}
+      <div className="flex-1 overflow-y-auto px-3 py-2 space-y-2 bg-gray-50">
         {messages.map((msg) => (
           <div key={msg._id} className="text-sm break-words">
             <span className="font-semibold">{msg.username}</span>: {msg.text}
             <span className="text-xs text-gray-500 ml-2">
-              [
               {new Date(msg.timestamp).toLocaleTimeString([], {
                 hour: "2-digit",
                 minute: "2-digit",
               })}
-              ]
             </span>
           </div>
         ))}
+        <div ref={messagesEndRef} />
       </div>
 
       {/* Input box */}
-      <div className="flex items-center p-2 space-x-2">
-        <input
-          type="text"
-          className="flex-1 border rounded p-2 text-sm sm:text-base"
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && handleSend()}
-          placeholder="Type a message..."
-        />
-        <button
-          onClick={handleSend}
-          className="px-3 py-2 sm:px-4 sm:py-2 border rounded bg-blue-500 text-white text-sm sm:text-base"
-        >
-          Send
-        </button>
+      <div className="sticky bottom-0 bg-white px-2 py-2 border-t">
+        <div className="flex items-center p-3 space-x-2 border-t bg-white">
+          <input
+            type="text"
+            className="flex-1 border rounded-xl px-4 py-3 text-base sm:text-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && handleSend()}
+            placeholder="Type a message..."
+          />
+          <button
+            onClick={handleSend}
+            className="px-5 py-3 rounded-xl bg-blue-500 text-white font-medium text-base sm:text-lg shadow hover:bg-blue-600 transition"
+          >
+            Send
+          </button>
+        </div>
       </div>
     </div>
   );
