@@ -50,13 +50,13 @@ const ChatWindow: React.FC = () => {
   return (
     <div className="flex flex-col h-screen w-full max-w-2xl mx-auto bg-white border rounded shadow">
       {/* Header */}
-      <div className="flex items-center justify-between px-4 py-2 border-b bg-gray-100 sticky top-0">
+      <div className="flex items-center justify-between px-4 py-2 border-b bg-gray-100">
         <h1 className="text-lg font-semibold">Chat</h1>
         <button
           onClick={handleSignOut}
           className="flex items-center gap-1 text-sm text-red-600 hover:text-red-800"
         >
-          Sign out
+          Logout
         </button>
       </div>
 
@@ -77,8 +77,8 @@ const ChatWindow: React.FC = () => {
       </div>
 
       {/* Input box */}
-      <div className="sticky bottom-0 bg-white px-2 py-2 border-t">
-        <div className="flex items-center p-3 space-x-2 border-t bg-white">
+      <div className="px-2 py-2 border-t bg-white">
+        <div className="flex items-center space-x-2">
           <input
             type="text"
             className="flex-1 border rounded-xl px-4 py-3 text-base sm:text-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
